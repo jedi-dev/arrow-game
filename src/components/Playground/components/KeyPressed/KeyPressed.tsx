@@ -4,6 +4,7 @@ import { useAppDispatch } from "../../../../app/hooks"
 import { setEnteredValue } from "../../store/slices"
 import { useKeyPressedElement } from "./hooks"
 import { TypographyHeader, TypographyText } from "../../../UI"
+import styles from "./KeyPressed.module.css"
 
 export interface IKeyPressedProps {
   isTimerActive: boolean
@@ -16,27 +17,31 @@ const KeyPressed: FC<IKeyPressedProps> = (props) => {
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
-      if (Object.hasOwn(MAP_ARROW_CODES, e.key) && isTimerActive) {
+      if (MAP_ARROW_CODES.hasOwnProperty(e.key) && isTimerActive) {
         dispatch(setEnteredValue(e.key))
       }
     },
-    [isTimerActive, dispatch],
+    [dispatch, isTimerActive],
   )
 
   useEffect(() => {
     window.addEventListener("keydown", handleKeyDown)
 
     return () => {
-      window.addEventListener("keydown", handleKeyDown)
+      window.removeEventListener("keydown", handleKeyDown)
     }
   })
   return (
     <div>
-      <TypographyHeader>KeyPressed</TypographyHeader>
-      <TypographyText>
-        Press the key corresponding to the key in "Random keys"
-      </TypographyText>
-      <span>{keyPressedElement}</span>
+      <TypographyHeader>Key pressed</TypographyHeader>
+      <div className={styles.container}>
+        <TypographyText>
+          Press the key corresponding to the key in "Random keys"
+        </TypographyText>
+        <div className={styles.wrapper}>
+          <span className={styles.icon}>{keyPressedElement}</span>
+        </div>
+      </div>
     </div>
   )
 }
